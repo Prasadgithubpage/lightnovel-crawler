@@ -10,7 +10,6 @@ try:
 except ImportError:
     logging.fatal("Failed to import ebooklib")
 
-
 logger = logging.getLogger(__name__)
 
 COVER_IMAGE_NAME = "cover.jpg"
@@ -131,7 +130,7 @@ def bind_epub_book(
     for chapters in chapter_groups:
         first_chapter = chapters[0]
         volume_id = first_chapter.volume
-        volume_title = first_chapter.volume_title or f"Book ${volume_id}"
+        volume_title = first_chapter.volume_title or f"Book {volume_id}"
         volume_html = f"""
         <div id="volume">
             <h1>{volume_title}</h1>
@@ -155,8 +154,8 @@ def bind_epub_book(
             # ebooklib does pretty-print for xhtml. minify is useless :(
             chapter_item = epub.EpubHtml(
                 file_name=f"chapter_{chapter.id}.xhtml",
-                content=str(chapter["body"]),
-                title=chapter["title"],
+                content=str(chapter.body),
+                title=chapter.title,
             )
             chapter_item.add_link(
                 href=style_item.file_name,
@@ -220,11 +219,11 @@ def make_epubs(app, data: Dict[str, List[Chapter]]) -> List[str]:
         images = []
         image_path = os.path.join(app.output_path, "images")
         if os.path.isdir(image_path):
-            images = {
+            images = [
                 os.path.join(image_path, filename)
                 for filename in os.listdir(image_path)
                 if filename.endswith(".jpg")
-            }
+            ]
 
         output = bind_epub_book(
             chapter_groups=list(volumes.values()),

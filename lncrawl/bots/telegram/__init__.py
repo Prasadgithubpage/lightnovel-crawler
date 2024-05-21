@@ -199,8 +199,10 @@ class TelegramBot:
         if job or context.user_data.get("app"):
             app = job.data.pop("app", None) or context.user_data.pop("app")
             app.destroy()
-            # remove output path
-            # shutil.rmtree(app.output_path, ignore_errors=True)
+
+        await context.bot.send_message(chat_id, text="Session closed", reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+
 
         await context.bot.send_message(chat_id, text="Session closed", reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END

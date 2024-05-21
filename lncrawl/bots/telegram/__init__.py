@@ -197,7 +197,7 @@ class TelegramBot:
             for job in self.get_current_jobs(update, context, chat_id):
                 job.schedule_removal()
 
-        app = context.user_data.pop("app", None)
+        app = context.user_data.pop("app", None) if context.user_data else None
         if app:
             app.destroy()
 
@@ -205,6 +205,7 @@ class TelegramBot:
             await context.bot.send_message(chat_id, text="Session closed", reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END
+
 
 
     async def init_app(self, update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -21,10 +21,7 @@
       "value": "telegram",
       "required": true
     },
-    "TELEGRAM_TOKEN": {
-      "description": "Telegram token, only required if BOT is set to telegram",
-      "required": true
-    },
+    "TELEGRAM_TOKEN": "7149847745:AAFZtg6JKMGhYJ-8Xqlwpe4YXnOoP7UG6L8",
     "DISCORD_TOKEN": {
       "description": "Discord token, only required if BOT is set to discord",
       "required": false
@@ -58,9 +55,6 @@
     },
     {
       "url": "https://github.com/heroku/heroku-buildpack-apt"
-    },
-    {
-      "url": "https://github.com/NNTin/heroku-buildpack-calibre"
     }
   ]
 }

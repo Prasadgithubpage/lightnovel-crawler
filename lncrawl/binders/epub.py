@@ -42,7 +42,7 @@ def bind_epub_book(
     book.set_title(book_title)
     book.add_author(novel_author)
     book.add_metadata('DC', 'description', novel_synopsis)
-    book.set_identifier(output_path + suffix)
+    book.set_identifier(str(output_path) + suffix)  # Convert output_path to string
     if is_rtl:
         book.set_direction("rtl")
 
@@ -236,7 +236,7 @@ def make_epubs(app, data: Dict[str, List[Chapter]]) -> List[str]:
             novel_synopsis=app.crawler.novel_synopsis,
             language=app.crawler.language,
             novel_tags=app.crawler.novel_tags,
-            output_path=app.output_path,
+            output_path=str(app.output_path),  # Convert output_path to string
             book_cover=app.book_cover,
             good_file_name=app.good_file_name,
             no_suffix_after_filename=app.no_suffix_after_filename,

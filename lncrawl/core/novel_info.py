@@ -75,10 +75,15 @@ def format_novel(crawler: Crawler):
 def save_metadata(app, completed=False):
     from ..core.app import App
     from .crawler import Crawler
+    from ..core.novel_info import MetaInfo, Novel, Session, Chapter
 
     if not (isinstance(app, App) and isinstance(app.crawler, Crawler)):
         return
 
+    # Convert PosixPath objects to strings
+    output_path_str = str(app.output_path)
+
+    # Construct the novel metadata
     novel = MetaInfo(
         novel=Novel(
             url=app.crawler.novel_url,
@@ -96,7 +101,7 @@ def save_metadata(app, completed=False):
             completed=completed,
             user_input=app.user_input,
             login_data=app.login_data,
-            output_path=app.output_path,
+            output_path=output_path_str,  # Convert to string
             output_formats=app.output_formats,
             pack_by_volume=app.pack_by_volume,
             good_file_name=app.good_file_name,
@@ -107,6 +112,10 @@ def save_metadata(app, completed=False):
             proxies=app.crawler.scraper.proxies,
         ),
     )
+
+    # Serialize the novel metadata
+    with open(app.metadata_path, "w", encoding="utf-8") as file:
+        file.write(novel.to_json(indent=2))
 
     Path(app.output_path).mkdir(parents=True, exist_ok=True)
     file_name = Path(app.output_path) / C.META_FILE_NAME

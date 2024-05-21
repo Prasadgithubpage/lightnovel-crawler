@@ -1,9 +1,8 @@
 {
-  "name": "lightnovel crawler",
-  "description": "Downloads lightnovels from various online sources and generates ebooks in many formats.",
+  "name": "lightnovel Telegram bot",
+  "description": "Downloads light novels from various online sources and generates ebooks in many formats. Works as a Telegram bot.",
   "keywords": [
     "bot",
-    "discord",
     "telegram",
     "novel",
     "lightnovel",
@@ -18,13 +17,13 @@
       "required": true
     },
     "BOT": {
-      "description": "Available: console, discord, telegram",
-      "value": "discord",
+      "description": "Available: telegram",
+      "value": "telegram",
       "required": true
     },
     "TELEGRAM_TOKEN": {
       "description": "Telegram token, only required if BOT is set to telegram",
-      "required": false
+      "required": true
     },
     "DISCORD_TOKEN": {
       "description": "Discord token, only required if BOT is set to discord",
@@ -32,12 +31,11 @@
     },
     "DISCORD_SIGNAL_CHAR": {
       "description": "Discord command prefix, only required if BOT is set to discord",
-      "required": true
+      "required": false
     },
     "DISCORD_DISABLE_SEARCH": {
       "description": "Disable searching in discord bot",
-      "required": false,
-      "value": "false"
+      "required": false
     },
     "CLOUD_DRIVE": {
       "description": "Available: GOFILE, GOOGLE_DRIVE, ANONFILES",

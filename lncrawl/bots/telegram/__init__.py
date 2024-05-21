@@ -1,4 +1,3 @@
-import os
 import re
 import shutil
 import logging
@@ -7,6 +6,7 @@ from urllib.parse import urlparse
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
                           ConversationHandler, Job, MessageHandler, filters)
+
 
 from lncrawl.core.app import App
 from lncrawl.core.sources import prepare_crawler
@@ -45,6 +45,22 @@ available_formats = [
 ]
 
 # Your existing code continues here...
+async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Add the welcome message here
+    welcome_message = (
+        "📚 Welcome to Night Novel Book Downloader bot! 🌙\n"
+        "Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!\n"
+        "\n"
+        "LINK 🔗 :- [WebsNovel](https://t.me/websnovel)\n"
+        "\n"
+        "👉 How to use:\n"
+        "- Upload your url and our bot will send the epub file.\n"
+        "- Time of upload will be depend on no. of chapters available in \n"
+        "- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more\n"
+    )
+    await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
+
+
 
 class TelegramBot:
     def start(self):
@@ -306,7 +322,7 @@ class TelegramBot:
 
         app.search_novel()
         return await self.show_novel_selection(update, context)
-
+    
     async def show_novel_selection(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         app = context.user_data.get("app")
 
@@ -574,54 +590,118 @@ class TelegramBot:
         app.pack_by_volume = text.startswith("Split")
 
         if app.pack_by_volume:
-            await update.message.reply_text("Downloading volume-wise")
+            await update.message.reply_text("I will split output files into volumes")
         else:
-            await update.message.reply_text("Downloading as a single file")
+            await update.message.reply_text(
+                "I will generate single output files whenever possible"
+            )
+
+        i = 0
+        new_list = [["all"]]
+        while i < len(available_formats):
+            new_list.append(available_formats[i : i + 2])
+            i += 2
 
         await update.message.reply_text(
-            "Which format do you prefer?",
+            "In which format you want me to generate your book?",
             reply_markup=ReplyKeyboardMarkup(
-                [available_formats], one_time_keyboard=True
+                new_list,
+                one_time_keyboard=True,
             ),
         )
+
         return "handle_output_format"
 
-    async def handle_output_format(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def handle_output_format(self, update, context):
         app = context.user_data.get("app")
+        user = update.message.from_user
 
-        text = update.message.text
-        app.output_formats = text.strip().split(" ")
+        text = update.message.text.strip().lower()
+        app.output_formats = {}
+        if text in available_formats:
+            for x in available_formats:
+                if x == text:
+                    app.output_formats[x] = True
+                else:
+                    app.output_formats[x] = False
+
+        elif text != "all":
+            await update.message.reply_text("Sorry, I did not understand.")
+            return
+
+        chat_id = update.effective_message.chat_id
+        job = context.job_queue.run_once(
+            self.process_download_request,
+            1,
+            name=str(user.id),
+            chat_id=chat_id,
+            data=context.user_data
+        )
+        context.user_data["job"] = job
 
         await update.message.reply_text(
-            "Your download will be ready soon. DO NOT type anything."
+            "Your request has been received."
+            'I will generate book in "%s" format' % text,
+            reply_markup=ReplyKeyboardRemove(),
         )
 
-        try:
-            await app.download()
-        except Exception as e:
+        return ConversationHandler.END
+
+    async def process_download_request(self, context):
+        job = context.job
+        user_data = job.data
+        app = user_data.get("app")
+        if app:
+            user_data["status"] = 'Downloading "%s"' % app.crawler.novel_title
+            app.start_download()
+            await context.bot.send_message(job.chat_id, text="Download finished.")
+
+        app = user_data.get("app")
+        if app:
+            user_data["status"] = "Generating output files"
+            await context.bot.send_message(job.chat_id, text=user_data.get("status"))
+            output_files = app.bind_books()
+            logger.debug("Output files: %s", output_files)
+            await context.bot.send_message(job.chat_id, text="Output files generated.")
+
+        app = user_data.get("app")
+        if app:
+            user_data["status"] = "Compressing output folder."
+            await context.bot.send_message(job.chat_id, text=user_data.get("status"))
+            app.compress_books()
+
+        for archive in app.archived_outputs:
+            file_size = os.stat(archive).st_size
+            if file_size < 49.99 * 1024 * 1024:
+                await context.bot.send_document(
+                    job.chat_id,
+                    open(archive, "rb")
+                )
+            else:
+                await context.bot.send_message(job.chat_id, text="File size more than 50 MB so cannot be sent via telegram bot.\n"
+                                               + "Uploading to alternative cloud storage"
+                                               )
+                try:
+                    description = "Generated By : Lightnovel Crawler Telegram Bot"
+                    direct_link = upload(archive, description)
+                    await context.bot.send_message(job.chat_id, text="Get your file here: %s" % direct_link)
+                except Exception as e:
+                    logger.error("Failed to upload file: %s", archive, e)
+
+        await self.destroy_app(None, context, job)
+
+    async def handle_downloader(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        app = context.user_data.get("app")
+        job = self.get_current_jobs(update, context)
+
+        if app or job:
             await update.message.reply_text(
-                "An error occurred: %s. Try again or send /cancel to stop." % str(e)
+                "%s\n"
+                "%d out of %d chapters has been downloaded.\n"
+                "To terminate this session send /cancel."
+                % (context.user_data.get("status"), app.progress, len(app.chapters))
             )
+        # else:
+        #     self.show_help(bot, update)
 
-        await update.message.reply_text(
-            "Download complete. Uploading file now..."
-        )
-
-        await self.upload_file(update, app.output_path)
-
-        await update.message.reply_text("Upload complete. Terminating session...")
-        return await self.destroy_app(update, context)
-
-    async def upload_file(self, update, output_path):
-        file_paths = [str(file) for file in Path(output_path).glob("*")]
-        for file_path in file_paths:
-            await update.message.reply_text(
-                "Uploading file: %s" % file_path.split("/")[-1]
-            )
-            await upload(update, file_path)
-        await update.message.reply_text("All files uploaded.")
-
-
-# Start the TelegramBot
-if __name__ == "__main__":
-    TelegramBot().start()
+        return ConversationHandler.END

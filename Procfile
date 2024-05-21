@@ -1,1 +1,1 @@
-bot: python3 lncrawl --bot telegram
+worker: python lncrawl --bot telegram

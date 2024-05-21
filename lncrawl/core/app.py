@@ -43,6 +43,7 @@ class App:
         self.archived_outputs = None
         self.good_file_name: str = ""
         self.no_suffix_after_filename = False
+        self.metadata_path = None  # Add metadata_path attribute
         atexit.register(self.destroy)
 
     def __background(self, target_method, *args, **kwargs):
@@ -149,11 +150,12 @@ class App:
 
         source_name = slugify(urlparse(self.crawler.home_url).netloc)
         self.output_path = Path(C.DEFAULT_OUTPUT_PATH) / source_name / self.good_file_name
+        self.metadata_path = self.output_path / "metadata.json"  # Define metadata_path
 
     # ----------------------------------------------------------------------- #
 
     def start_download(self):
-        """Requires: crawler, chapters, output_path"""
+        """Requires: crawler, chapters, output_path, metadata_path"""
         if not self.output_path or not Path(self.output_path).is_dir():
             raise LNException("Output path is not defined")
 

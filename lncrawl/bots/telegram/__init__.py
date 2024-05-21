@@ -84,7 +84,7 @@ class TelegramBot:
                 ),
             ],
             fallbacks=[
-                CommandHandler("cancel", self.destroy_app),
+                CommandHandler("cancel", ConversationHandler.END),
             ],
             states={
                 "handle_novel_url": [

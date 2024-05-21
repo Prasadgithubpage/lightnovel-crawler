@@ -11,9 +11,6 @@ RUN apt-get update -yq \
     && apt-get clean autoclean \
     && apt-get autoremove -yq
 
-# Install calibre
-RUN wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin \
-    && ln -s /opt/calibre/ebook-convert /usr/local/bin/ebook-convert
 
 # Add app user
 RUN useradd -ms /bin/bash appuser

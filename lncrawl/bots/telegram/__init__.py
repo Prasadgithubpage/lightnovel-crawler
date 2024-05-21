@@ -12,6 +12,7 @@ from telegram.ext import (Application, CommandHandler, ContextTypes,
 from lncrawl.core.app import App
 from lncrawl.core.sources import prepare_crawler
 from lncrawl.utils.uploader import upload
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -155,7 +156,8 @@ class TelegramBot:
 
     async def error_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Log Errors caused by Updates."""
-        logger.warning("Error: %s\nCaused by: %s", repr(context.error), update)
+        error_str = "".join(traceback.format_exception(etype=type(context.error), value=context.error, tb=context.error.__traceback__))
+        logger.warning("Error: %s\nCaused by: %s", error_str, update)
 
 
     async def show_help(self, update: Update, context: ContextTypes.DEFAULT_TYPE):

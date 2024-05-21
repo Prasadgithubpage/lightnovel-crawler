@@ -211,7 +211,15 @@ class TelegramBot:
         app = App()
         app.initialize()
         context.user_data["app"] = app
-        await update.message.reply_text("A new session is created.")
+        await update.message.reply_text('''📚 Welcome to Night Novel Book Downloader bot! 🌙
+Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!
+
+LINK 🔗 :- https://t.me/websnovel
+
+👉 How to use:
+- Upload your url and our bot will send the epub file.
+- Time of upload will be depend on no. of chapters available in 
+- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more''')
 
         await update.message.reply_text(
             "I recognize input of these two categories:\n"

@@ -1,12 +1,12 @@
-import logging
 import os
 import re
 import shutil
+import logging
+from pathlib import Path
 from urllib.parse import urlparse
-
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
-                          ConversationHandler, Job, MessageHandler, filters)
+                          ConversationHandler, MessageHandler, filters)
 
 from lncrawl.core.app import App
 from lncrawl.core.sources import prepare_crawler
@@ -14,6 +14,26 @@ from lncrawl.utils.uploader import upload
 
 logger = logging.getLogger(__name__)
 
+# Custom JSON formatter
+class CustomJsonFormatter(logging.Formatter):
+    def format(self, record):
+        record_dict = {
+            'levelname': record.levelname,
+            'asctime': self.formatTime(record),
+            'message': record.getMessage(),
+            'module': record.module,
+            'lineno': record.lineno,
+            'funcName': record.funcName
+        }
+        return record_dict
+
+formatter = CustomJsonFormatter()
+
+# Set the formatter to the logger
+ch = logging.StreamHandler()
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+logger.setLevel(logging.INFO)
 
 available_formats = [
     "epub",
@@ -22,6 +42,9 @@ available_formats = [
     "mobi",
     "pdf",
 ]
+
+# Your existing code continues here...
+
 
 
 class TelegramBot:

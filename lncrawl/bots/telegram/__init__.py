@@ -318,18 +318,6 @@ LINK 🔗 :- https://t.me/websnovel
             if len(selected_crawlers) != 0:
                 app.crawler_links = selected_crawlers
 
-        await update.message.reply_text(
-            'Searching for "%s" in %d sites. Please wait.'
-            % (app.user_input, len(app.crawler_links)),
-            reply_markup=ReplyKeyboardRemove(),
-        )
-        await update.message.reply_text(
-            "DO NOT type anything until I reply.\n"
-            "You can only send /cancel to stop this session."
-        )
-
-        app.search_novel()
-        return await self.show_novel_selection(update, context)
     
     async def show_novel_selection(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         app = context.user_data.get("app")

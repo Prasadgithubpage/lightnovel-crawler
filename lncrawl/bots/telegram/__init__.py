@@ -591,7 +591,7 @@ LINK 🔗 :- https://t.me/websnovel
             )
 
         i = 0
-        new_list = [["all"]]
+        new_list = []
         while i < len(available_formats):
             new_list.append(available_formats[i : i + 2])
             i += 2

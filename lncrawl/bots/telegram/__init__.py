@@ -209,15 +209,14 @@ class TelegramBot:
         app = App()
         app.initialize()
         context.user_data["app"] = app
-        await update.message.reply_text('''📚 Welcome to Night Novel Book Downloader bot! 🌙
-Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!
-
-LINK 🔗 :- https://t.me/websnovel
-
-👉 How to use:
-- Upload your url and our bot will send the epub file.
-- Time of upload will be depend on no. of chapters available in 
-- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more''')
+        await update.message.reply_text('''📚 Welcome to Scrapper Bot, your ultimate companion for downloading novels! 🌙\n
+        \n
+        👉 How to use:\n
+        Simply upload your URL and our bot will swiftly send the ePub file.\n
+        Upload time may vary depending on the number of chapters available.\n
+        Supported sites include popular ones like NovelFull, NovelHall, BoxNovel, and many more.\n\n
+        OUR NOVELS REPOSITORY - t.me/NovelRepository - For webnovels, light novels\n
+        OUR NIGHT NOVEL - t.me/websnovel - For Audiobooks, Novels, Requests''')
 
         await update.message.reply_text(
             "I recognize input of these two categories:\n"

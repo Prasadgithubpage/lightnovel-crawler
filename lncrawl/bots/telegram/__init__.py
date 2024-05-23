@@ -503,7 +503,7 @@ class TelegramBot:
         await update.message.reply_text(
             "Do you want to generate a single file or split the books into volumes?",
             reply_markup=ReplyKeyboardMarkup(
-                [["Single file", "Split by volumes"]], one_time_keyboard=True
+                [["Single file"]], one_time_keyboard=True
             ),
         )
         return "handle_pack_by_volume"

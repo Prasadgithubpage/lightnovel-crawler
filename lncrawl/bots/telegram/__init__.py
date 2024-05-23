@@ -247,33 +247,19 @@ LINK 🔗 :- https://t.me/websnovel
 
             app.user_input = update.message.text.strip()
 
-            try:
-                handle_novel_url()
-            except Exception:
+        # Check if the input is a valid URL
+            parsed_url = urlparse(app.user_input)
+            if all([parsed_url.scheme, parsed_url.netloc]):
+                app.prepare_search()
+                if app.crawler:
+                    await update.message.reply_text("Got your page link")
+                    return await self.get_novel_info(update, context)
+            else:
                 await update.message.reply_text(
-                    "Sorry! I only recognize these sources:\n"
-                    + "https://github.com/dipu-bd/lightnovel-crawler#supported-sources"
-                )
-                await update.message.reply_text(
-                    "Enter something again or send /cancel to stop."
-                )
-                await update.message.reply_text(
-                    "You can send the novelupdates link of the novel too.",
+                    "Please input a valid URL."
                 )
                 return "handle_novel_url"
 
-            if app.crawler:
-                await update.message.reply_text("Got your page link")
-                return await self.get_novel_info(update, context)
-
-            if len(app.user_input) < 5:
-                await update.message.reply_text(
-                    "Please enter a longer query text (at least 5 letters)."
-                )
-                return "handle_novel_url"
-
-            await update.message.reply_text("Got your query text")
-            return await self.show_crawlers_to_search(update, context)
 
     async def show_crawlers_to_search(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         app = context.user_data.get("app")

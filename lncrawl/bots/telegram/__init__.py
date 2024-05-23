@@ -183,24 +183,17 @@ class TelegramBot:
         return current_jobs
 
     async def destroy_app(self, update: Update, context: ContextTypes.DEFAULT_TYPE, job: Job = None):
-        if update:
-            chat_id = str(update.effective_message.chat_id)
-        else:
-            chat_id = job.chat_id
-
+        chat_id = str(update.effective_message.chat_id if update else job.chat_id)
         for job in self.get_current_jobs(update, context, chat_id):
             job.schedule_removal()
 
-        if job or context.user_data.get("app"):
-            app = job.data.pop("app", None) or context.user_data.pop("app")
+        app = context.user_data.pop("app", None)
+        if app:
             app.destroy()
 
         await context.bot.send_message(chat_id, text="Session closed", reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END
 
-
-        await context.bot.send_message(chat_id, text="Session closed", reply_markup=ReplyKeyboardRemove())
-        return ConversationHandler.END
 
     async def init_app(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if context.user_data.get("app"):

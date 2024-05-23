@@ -45,17 +45,16 @@ available_formats = [
 # Your existing code continues here...
 async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Add the welcome message here
-welcome_message = (
-    "📚 Welcome to Scrapper Bot, your ultimate companion for downloading novels! 🌙\n"
-    "\n"
-    "👉 How to use:\n"
-    "Simply upload your URL and our bot will swiftly send the ePub file.\n"
-    "Upload time may vary depending on the number of chapters available.\n"
-    "Supported sites include popular ones like NovelFull, NovelHall, BoxNovel, and many more.\n\n"
-    "OUR NOVELS REPOSITORY - t.me/NovelRepository - For webnovels, light novels\n"
-    "OUR NIGHT NOVEL - t.me/websnovel - For Audiobooks, Novels, Requests"
-)
-
+    welcome_message = (
+        "📚 Welcome to Scrapper Bot, your ultimate companion for downloading novels! 🌙\n"
+        "\n"
+        "👉 How to use:\n"
+        "Simply upload your URL and our bot will swiftly send the ePub file.\n"
+        "Upload time may vary depending on the number of chapters available.\n"
+        "Supported sites include popular ones like NovelFull, NovelHall, BoxNovel, and many more.\n\n"
+        "OUR NOVELS REPOSITORY - t.me/NovelRepository - For webnovels, light novels\n"
+        "OUR NIGHT NOVEL - t.me/websnovel - For Audiobooks, Novels, Requests"
+    )
     await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
 
 

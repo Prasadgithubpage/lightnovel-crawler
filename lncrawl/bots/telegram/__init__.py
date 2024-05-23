@@ -42,9 +42,7 @@ available_formats = [
     "epub",
 ]
 
-# Your existing code continues here...
-async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
+
 
 
 

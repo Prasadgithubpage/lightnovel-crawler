@@ -8,9 +8,7 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
                           ConversationHandler, Job, MessageHandler, filters)
 
-
 from lncrawl.core.app import App
-from lncrawl.core.sources import prepare_crawler
 from lncrawl.utils.uploader import upload
 import traceback
 
@@ -42,22 +40,22 @@ available_formats = [
 ]
 
 # Your existing code continues here...
-async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Add the welcome message here
-    welcome_message = (
-        "📚 Welcome to Night Novel Book Downloader bot! 🌙\n"
-        "Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!\n"
-        "\n"
-        "LINK 🔗 :- [WebsNovel](https://t.me/websnovel)\n"
-        "\n"
-        "👉 How to use:\n"
-        "- Upload your url and our bot will send the epub file.\n"
-        "- Time of upload will be depend on no. of chapters available in \n"
-        "- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more\n"
-    )
-    await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
-
 class TelegramBot:
+    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        # Add the welcome message here
+        welcome_message = (
+            "📚 Welcome to Night Novel Book Downloader bot! 🌙\n"
+            "Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!\n"
+            "\n"
+            "LINK 🔗 :- [WebsNovel](https://t.me/websnovel)\n"
+            "\n"
+            "👉 How to use:\n"
+            "- Upload your url and our bot will send the epub file.\n"
+            "- Time of upload will be depend on no. of chapters available in \n"
+            "- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more\n"
+        )
+        await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
+
     def start(self):
         os.environ["debug_mode"] = "yes"
 
@@ -83,11 +81,6 @@ class TelegramBot:
                 "handle_novel_url": [
                     MessageHandler(
                         filters.TEXT & ~(filters.COMMAND), self.handle_novel_url
-                    ),
-                ],
-                "handle_select_source": [
-                    MessageHandler(
-                        filters.TEXT & ~(filters.COMMAND), self.handle_select_source
                     ),
                 ],
                 "handle_delete_cache": [

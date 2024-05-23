@@ -44,18 +44,6 @@ available_formats = [
 
 # Your existing code continues here...
 async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Add the welcome message here
-    welcome_message = (
-        "📚 Welcome to Night Novel Book Downloader bot! 🌙\n"
-        "Join our channel [WebsNovel](https://t.me/websnovel) for more such awesome reads!\n"
-        "\n"
-        "LINK 🔗 :- [WebsNovel](https://t.me/websnovel)\n"
-        "\n"
-        "👉 How to use:\n"
-        "- Upload your url and our bot will send the epub file.\n"
-        "- Time of upload will be depend on no. of chapters available in \n"
-        "- Some popular supported sites http://novelfull.com/ ,http://novelhall.com/ , https://boxnovel.com/ and many more\n"
-    )
     await update.message.reply_text(welcome_message, parse_mode='Markdown', disable_web_page_preview=True)
 
 

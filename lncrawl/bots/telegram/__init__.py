@@ -212,10 +212,12 @@ LINK 🔗 :- https://t.me/websnovel
                 context.user_data["app"] = app
 
             app.user_input = update.message.text.strip()
+            logger.info(f"Received novel URL: {app.user_input}")
 
             try:
                 app.prepare_crawler()
-            except Exception:
+            except Exception as e:
+                logger.error(f"Error preparing crawler: {e}")
                 await update.message.reply_text(
                     "Sorry! I only recognize these sources:\n"
                     + "https://github.com/dipu-bd/lightnovel-crawler#supported-sources"
@@ -229,34 +231,26 @@ LINK 🔗 :- https://t.me/websnovel
                 return "handle_novel_url"
 
             if app.crawler:
+                logger.info("Crawler prepared successfully")
                 await update.message.reply_text("Got your page link")
                 return await self.get_novel_info(update, context)
 
     async def get_novel_info(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         app = context.user_data.get("app")
-        # user = update.message.from_user
+        logger.info(f"Fetching novel info for URL: {app.crawler.novel_url}")
 
         await update.message.reply_text(app.crawler.novel_url)
-
-        # TODO: Implement login feature. Create login_info_dict of (email, password)
-        # if app.can_do('login'):
-        #     app.login_data = login_info_dict.get(app.crawler.home_url)
-        #
 
         await update.message.reply_text("Reading novel info...")
         app.get_novel_info()
 
         if os.path.exists(app.output_path):
             await update.message.reply_text(
-                "Local cache found do you want to use it",
-                reply_markup=ReplyKeyboardMarkup(
-                    [["Yes", "No"]], one_time_keyboard=True
-                ),
+                "Local cache found. Do you want to delete it? (yes/no)"
             )
             return "handle_delete_cache"
         else:
             os.makedirs(app.output_path, exist_ok=True)
-            # Get chapter range from user
             return await self.get_range_selection(update, context)
 
     async def handle_delete_cache(self, update: Update, context: ContextTypes.DEFAULT_TYPE):

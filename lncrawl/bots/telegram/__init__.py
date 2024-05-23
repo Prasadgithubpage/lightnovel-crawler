@@ -112,6 +112,7 @@ class TelegramBot:
                     ),
                 ],
                 "handle_range_selection": [
+                    CommandHandler("all", self.handle_range_all),
                     CommandHandler("last", self.handle_range_last),
                     CommandHandler(
                         "first", self.handle_range_first

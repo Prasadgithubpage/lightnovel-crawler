@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Iterable, List, Optional
-
+ 
 from bs4 import BeautifulSoup
 from requests.cookies import RequestsCookieJar
 from selenium.webdriver.common.action_chains import ActionChains

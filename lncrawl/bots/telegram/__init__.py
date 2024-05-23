@@ -248,7 +248,7 @@ LINK 🔗 :- https://t.me/websnovel
             app.user_input = update.message.text.strip()
 
             try:
-                app.prepare_search()
+                handle_novel_url()
             except Exception:
                 await update.message.reply_text(
                     "Sorry! I only recognize these sources:\n"
@@ -272,7 +272,8 @@ LINK 🔗 :- https://t.me/websnovel
                 )
                 return "handle_novel_url"
 
-
+            await update.message.reply_text("Got your query text")
+            return await self.show_crawlers_to_search(update, context)
 
     async def show_crawlers_to_search(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         app = context.user_data.get("app")

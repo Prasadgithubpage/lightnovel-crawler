@@ -17,9 +17,9 @@ class Bot:
             runner = web.AppRunner(app)
             await runner.setup()
             # Render might use port 10000 or another specified port
-            site = web.TCPSite(runner, "0.0.0.0", 10000)  
+            site = web.TCPSite(runner, "0.0.0.0", 8080)  
             await site.start()
-            print("Server started at http://0.0.0.0:10000")
+            print("Server started at http://0.0.0.0:8080")
 
         # Run the command in the background
         subprocess.Popen(["python", "-m", "lncrawl", "--suppress", "--bot", "telegram"])

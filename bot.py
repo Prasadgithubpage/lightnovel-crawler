@@ -1,5 +1,6 @@
 from aiohttp import web
 import subprocess
+import asyncio
 
 # Inline configuration
 class Config:
@@ -17,5 +18,9 @@ class Bot:
         # Run the command using subprocess
         subprocess.run(["python", "-m", "lncrawl", "--suppress", "--bot", "telegram"])
 
+async def main():
+    bot = Bot()
+    await bot.start()
+
 # Run the bot
-Bot().start()
+asyncio.run(main())

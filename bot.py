@@ -1,6 +1,9 @@
 from aiohttp import web
-from config import Config
 import subprocess
+
+# Inline configuration
+class Config:
+    WEB_SUPPORT = True  # Set this to True if you want to enable web support
 
 class Bot:
     async def start(self):
